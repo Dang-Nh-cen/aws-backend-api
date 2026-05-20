@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AWS Multi-Tier App</title></head>
+<body style="font-family: Arial; text-align: center; margin-top: 50px;">
+    <h1>Giao Diện Web Đã Chạy Thành Công!</h1>
+    <p>Đang kết nối qua Load Balancer vào App Server.</p>
+    <button onclick="loadTasks()" style="padding: 10px 20px; font-size: 16px;">Lấy danh sách Task từ RDS</button>
+    <ul id="taskList" style="list-style: none; padding: 0; margin-top: 20px;"></ul>
+
+    <script>
+        async function loadTasks() {
+	    const response = await fetch('/api/tasks');
+            const tasks = await response.json();
+            const list = document.getElementById('taskList');
+            list.innerHTML = '';
+            tasks.forEach(t => {
+                list.innerHTML += `<li>Mã: ${t.id} - <b>${t.title}</b> (Trạng thái: ${t.status})</li>`;
+            });
+        }
+    </script>
+</body>
+</html>
