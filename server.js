@@ -6,7 +6,7 @@ const { sequelize, Task } = require('./database');
 const app = express();
 app.use(cors());
 app.use(express.json());
-
+app.use(express.static('public'));
 // API 1: Health Check (Load Balancer sẽ gọi API này ở Tuần 4)
 app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'OK', message: 'Backend Node.js đang chạy tốt!' });
