@@ -30,6 +30,13 @@ app.get('/api/tasks', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
+// Khai báo để server hiểu thư mục public
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Kết nối DB và chạy Server
 sequelize.sync({ force: false }).then(() => {
     console.log('Đã đồng bộ Database RDS thành công! Bảng Tasks đã sẵn sàng.');

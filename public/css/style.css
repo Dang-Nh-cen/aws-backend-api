@@ -1,0 +1,36 @@
+/* Tùy chỉnh màu sắc thương hiệu Coffee Hub */
+:root {
+    --brand-color: #5d4037; /* Màu nâu cà phê */
+    --accent-color: #8d6e63;
+}
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Sidebar và Navbar */
+.navbar {
+    background-color: var(--brand-color) !important;
+}
+
+/* Card số liệu (Dashboard) */
+.card {
+    border: none;
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Bảng dữ liệu */
+.table thead {
+    background-color: var(--brand-color);
+    color: white;
+}
+
+/* Nút bấm */
+.btn-primary {
+    background-color: var(--brand-color);
+    border: none;
+}
