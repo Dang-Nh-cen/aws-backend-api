@@ -1,5 +1,5 @@
 # 1. Chọn hệ điều hành nền: Dùng bản 'alpine' siêu nhẹ để tiết kiệm RAM cho máy Mac
-FROM node:18-alpine
+FROM public.ecr.aws/docker/library/node:18-alpine
 
 # 2. Tạo thư mục làm việc bên trong Container
 WORKDIR /usr/src/app
