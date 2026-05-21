@@ -34,3 +34,26 @@ body {
     background-color: var(--brand-color);
     border: none;
 }
+
+/* Hiệu ứng đổ bóng khi di chuột vào bảng */
+.table-hover tbody tr:hover {
+    background-color: #e9ecef;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Biến nút bấm thành màu "xịn" hơn */
+.btn-outline-warning {
+    color: #fd7e14;
+    border-color: #fd7e14;
+}
+.btn-outline-warning:hover {
+    background-color: #fd7e14;
+    color: white;
+}
+
+/* Thêm khoảng cách và đổ bóng cho card dashboard */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
