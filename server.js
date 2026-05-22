@@ -1,50 +1,59 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const db = require('./database');
-require('dotenv').config();
-const { sequelize, Task } = require('./database');
+
+// Import đúng cấu trúc của Sequelize từ file database.js
+const { sequelize, Supplier } = require('./database'); 
 
 const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(express.static('public'));
-// API 1: Health Check (Load Balancer sẽ gọi API này ở Tuần 4)
-app.get('/api/health', (req, res) => {
-    res.status(200).json({ status: 'OK', message: 'Backend Node.js đang chạy tốt!' });
-});
+const PORT = process.env.PORT || 3000;
 
-// API 2: Tạo Task mới (Test ghi vào RDS)
-app.post('/api/tasks', async (req, res) => {
+// Middleware
+app.use(cors());
+app.use(express.json()); // Rất quan trọng để đọc dữ liệu JSON
+
+// Phục vụ file tĩnh (CSS, JS, HTML)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// --- CÁC API CHO HỆ THỐNG SCM ---
+
+// API: Lấy danh sách nhà cung cấp
+app.get('/api/suppliers', async (req, res) => {
     try {
-        const task = await Task.create({ title: req.body.title });
-        res.status(201).json(task);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+        // Sử dụng hàm findAll() của Sequelize thay vì câu lệnh SQL thô
+        const suppliers = await Supplier.findAll(); 
+        res.json(suppliers);
+    } catch (err) {
+        console.error('Lỗi truy vấn database:', err);
+        res.status(500).json({ error: 'Không thể lấy dữ liệu' });
     }
 });
 
-// API 3: Lấy danh sách Task (Test đọc từ RDS)
-app.get('/api/tasks', async (req, res) => {
-    const tasks = await Task.findAll();
-    res.json(tasks);
+// API: Xóa nhà cung cấp
+app.delete('/api/suppliers/:id', async (req, res) => {
+    try {
+        // Sử dụng hàm destroy() của Sequelize
+        await Supplier.destroy({ 
+            where: { id: req.params.id } 
+        });
+        res.status(200).send('Đã xóa thành công');
+    } catch (err) {
+        console.error('Lỗi khi xóa:', err);
+        res.status(500).json({ error: 'Không thể xóa dữ liệu' });
+    }
 });
 
-const PORT = process.env.PORT || 3000;
-
-// Khai báo để server hiểu thư mục public
-app.use(express.static(path.join(__dirname, 'public')));
-
+// Route chính cho Frontend
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Kết nối DB và chạy Server
-sequelize.sync({ force: false }).then(() => {
-    console.log('Đã đồng bộ Database RDS thành công! Bảng Tasks đã sẵn sàng.');
+// Khởi chạy server và kết nối Database
+sequelize.sync().then(() => {
+    console.log('✅ Đã kết nối và đồng bộ Database RDS thành công!');
     app.listen(PORT, () => {
-        console.log(`Server Backend đang chạy tại Port ${PORT}`);
+        console.log(`🚀 Server Backend đang chạy tại Port ${PORT}`);
     });
 }).catch(err => {
-    console.error('Lỗi không thể kết nối tới Database RDS:', err);
+    console.error('❌ Lỗi không thể kết nối tới Database RDS:', err);
 });
