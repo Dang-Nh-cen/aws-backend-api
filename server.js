@@ -11,11 +11,14 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json()); 
-
-// Cấu hình thư mục tĩnh
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- API ---
+// --- API 1: Health Check cho AWS Load Balancer (Bắt buộc phải có) ---
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'OK', message: 'Hệ thống đang hoạt động' });
+});
+
+// --- API 2: Lấy dữ liệu nhà cung cấp ---
 app.get('/api/suppliers', async (req, res) => {
     try {
         const suppliers = await Supplier.findAll(); 
@@ -26,6 +29,7 @@ app.get('/api/suppliers', async (req, res) => {
     }
 });
 
+// --- API 3: Xóa nhà cung cấp ---
 app.delete('/api/suppliers/:id', async (req, res) => {
     try {
         await Supplier.destroy({ where: { id: req.params.id } });
@@ -34,6 +38,10 @@ app.delete('/api/suppliers/:id', async (req, res) => {
         console.error('Lỗi xóa:', err);
         res.status(500).json({ error: 'Không thể xóa dữ liệu' });
     }
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Chạy server & Kết nối DB
