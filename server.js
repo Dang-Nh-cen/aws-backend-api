@@ -44,12 +44,16 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Chạy server & Kết nối DB
-sequelize.sync().then(() => {
-    console.log('✅ Đã kết nối Database RDS');
-    app.listen(PORT, () => {
-        console.log(`🚀 Server chạy tại Port ${PORT}`);
+// Thay thế toàn bộ phần dưới cùng của server.js bằng đoạn này:
+
+// 1. Bật Server lên TRƯỚC để AWS Load Balancer đi qua (Health Check Pass)
+app.listen(PORT, () => {
+    console.log(`🚀 Server Backend đang chạy tại Port ${PORT}`);
+    
+    // 2. Kết nối Database ngầm ở phía sau
+    sequelize.sync().then(() => {
+        console.log('✅ Đã kết nối và đồng bộ Database RDS thành công!');
+    }).catch(err => {
+        console.error('❌ Lỗi không thể kết nối tới Database RDS:', err);
     });
-}).catch(err => {
-    console.error('❌ Lỗi Database:', err);
 });
