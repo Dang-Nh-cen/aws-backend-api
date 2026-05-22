@@ -4,8 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
     <title>Coffee Hub - SCM System</title>
+    
+    <style>
+        :root { --brand-color: #5d4037; --accent-color: #8d6e63; }
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+        .navbar { background-color: var(--brand-color) !important; }
+        .card { border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); }
+        .table thead { background-color: var(--brand-color); color: white; }
+        .table-hover tbody tr:hover { background-color: #e9ecef; cursor: pointer; transition: all 0.3s ease; }
+    </style>
 </head>
 <body class="bg-light">
 
@@ -51,6 +60,70 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/dashboard.js"></script>
+    
+    <script>
+        let myChart = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+        });
+
+        async function init() {
+            try {
+                const response = await fetch('/api/suppliers');
+                const data = await response.json();
+                
+                const tbody = document.getElementById('supplier-table');
+                document.getElementById('supplier-count').innerText = data.length;
+
+                tbody.innerHTML = data.map(s => `
+                    <tr class="align-middle">
+                        <td>#${s.id}</td>
+                        <td><strong>${s.name}</strong></td>
+                        <td>${s.address}</td>
+                        <td><span class="badge bg-success-subtle text-success">Active</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-warning me-2">Edit</button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteSupplier(${s.id})">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                const areaCounts = data.reduce((acc, s) => {
+                    acc[s.address] = (acc[s.address] || 0) + 1;
+                    return acc;
+                }, {});
+                
+                renderChart(Object.keys(areaCounts), Object.values(areaCounts));
+
+            } catch (err) { 
+                console.error('Lỗi khởi tạo:', err); 
+            }
+        }
+
+        function renderChart(labels, values) {
+            const ctx = document.getElementById('supplierChart').getContext('2d');
+            
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: values, backgroundColor: ['#5d4037', '#8d6e63', '#d7ccc8', '#a1887f'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        async function deleteSupplier(id) {
+            if (confirm('Bạn chắc chắn muốn xóa đối tác này?')) {
+                await fetch(`/api/suppliers/${id}`, { method: 'DELETE' });
+                init(); 
+            }
+        }
+    </script>
 </body>
 </html>
