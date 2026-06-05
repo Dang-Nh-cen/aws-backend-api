@@ -7,8 +7,7 @@
     <title>Coffee Hub - SCM System</title>
     
     <style>
-        /* Đã đổi màu thương hiệu sang dải màu Xanh Dương (Blue) */
-        :root { --brand-color: #0d6efd; --accent-color: #0056b3; } 
+        :root { --brand-color: #5d4037; --accent-color: #8d6e63; }
         body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
         .navbar { background-color: var(--brand-color) !important; }
         .card { border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s; }
@@ -21,7 +20,7 @@
 
     <nav class="navbar navbar-dark bg-dark mb-4">
         <div class="container">
-            <a class="navbar-brand" href="#">📦 Coffee Hub SCM (Blue Theme)</a>
+            <a class="navbar-brand" href="#">📦 Coffee Hub SCM</a>
         </div>
     </nav>
 
@@ -113,8 +112,7 @@
                 type: 'pie',
                 data: {
                     labels: labels,
-                    /* Đã đổi màu biểu đồ sang các dải màu Xanh Dương */
-                    datasets: [{ data: values, backgroundColor: ['#0056b3', '#0d6efd', '#0dcaf0', '#9ec5fe'] }]
+                    datasets: [{ data: values, backgroundColor: ['#5d4037', '#8d6e63', '#d7ccc8', '#a1887f'] }]
                 },
                 options: { responsive: true, maintainAspectRatio: false }
             });

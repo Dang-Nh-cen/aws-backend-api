@@ -44,9 +44,6 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Thay thế toàn bộ phần dưới cùng của server.js bằng đoạn này:
-
-// 1. Bật Server lên TRƯỚC để AWS Load Balancer đi qua (Health Check Pass)
 app.listen(PORT, () => {
     console.log(`🚀 Server Backend đang chạy tại Port ${PORT}`);
     
